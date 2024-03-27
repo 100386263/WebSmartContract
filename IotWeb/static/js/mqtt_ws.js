@@ -41,18 +41,35 @@ function create_html(message, front_id) {
     var html = '   <div class="col-lg-4 mb-4">' +
         '<div class="card">' +
         '<div class="card-body">' +
-        '<h5 class="card-title">Dispositivo: ' + front_id + '</h5>' +
-        '<div class="dropdown">' +
-        '<button class="btn btn-secondary dropdown-toggle" type="button" id=dropdown-' + front_id + ' data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></button>' +
+        '<h5 class="card-title">Dispositivo: ' + message.device + '</h5>' +
+        '<div class="dropdown m-2">' +
+        '<button class="btn btn-secondary dropdown-toggle" type="button" id=dropdown-' + front_id + ' data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">' +
+        'Estrategia' + '</button>' +
         '<div class="dropdown-menu" aria-labelledby="dropdown-' + front_id + '">' +
         '<a class="dropdown-item">Conservador</a>' +
         '<a class="dropdown-item">Moderado</a>' +
         '<a class="dropdown-item">Arriesgado</a>' +
         '</div >' +
         '</div >' +
-        '<h6 class="card-title">Consumo vivienda</h6>' +
-        '<p class="card-text" id=consumption-' + front_id + '></p>' +
-        '<a  class="btn btn-primary send-config" data-id=' + front_id + '>Enviar configuración</a>' +
+        '<h6 class="card-title m-2">Consumo vivienda</h6>' +
+        '<div class="row">' +
+        '<div class="col-4 p-3">' +
+        '<img src="/static/img/house.png" style="max-width: 100%;"></img>' +
+        '</div>' +
+        '<div class="col-4">' +
+        '<div class="row">' +
+        '<p class="card-text text-center" id=consumption-' + front_id + '></p>' +
+        '</div>' +
+        '<div class="row">' +
+        '<div id=flow-' + front_id + '>' +
+        '</div>' +
+        '</div>' +
+        '</div>' +
+        '<div class="col-4 p-3">' +
+        '<img src="/static/img/tower.png" style="max-width: 100%;"></img>' +
+        '</div>' +
+        '</div>' +
+        '<a  class="btn btn-primary send-config mt-2" data-id=' + front_id + '>Enviar configuración</a>' +
         '</div>' +
         '</div>' +
         '</div>';
@@ -85,6 +102,15 @@ function add_data(message, front_id) {
             break;
         case 'consumption':
             $('#consumption-' + front_id).text(message.value + ' w')
+            const valorDiv = $('#flow-' + front_id);
+
+            if (message.value > 0) {
+                valorDiv.removeClass().addClass('text-danger text-center').css({ 'display': 'block', 'width': '100%','font-size':'4em' }).html('&larr;');
+                $('#consumption-' + front_id).removeClass().addClass('text-danger text-center')
+            } else {
+                valorDiv.removeClass().addClass('text-success text-center').css({ 'display': 'block', 'width': '100%','font-size':'4em' }).html('&rarr;');
+                $('#consumption-' + front_id).removeClass().addClass('text-success text-center')
+            }
 
             break;
 
