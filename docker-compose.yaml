@@ -6,7 +6,7 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data/
     ports:
-       - '5432:5432'
+      - '5432:5432'
     environment:
       - "POSTGRES_HOST_AUTH_METHOD=trust"
 
@@ -23,5 +23,23 @@ services:
     depends_on:
       - db
 
+  mosquitto:
+    image: eclipse-mosquitto
+    container_name: mosquitto
+    network_mode: host
+    ports:
+      - "1883:1883"  # Puerto para MQTT (sin TLS)
+    volumes:
+      - mosquitto_data:/mosquitto/data
+      - mosquitto_logs:/mosquitto/log
+      - mosquitto_conf:/mosquitto/config
+    environment:
+      - MQTT_USERNAME=myuser
+      - MQTT_PASSWORD=mypassword
+    command: mosquitto -c /mosquitto/config/mosquitto.conf
+
 volumes:
   postgres_data:
+  mosquitto_data:
+  mosquitto_logs:
+  mosquitto_conf:
