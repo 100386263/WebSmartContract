@@ -10,10 +10,11 @@ class MQTTClient(threading.Thread):
         self.mqttc.on_message = self.on_message
         self.websocket = websocket
         self.running = False
+        self.mqttc.username_pw_set('marcos', 'Maraljo1')
 
     def run(self):
-        self.mqttc.connect("localhost", 1883, 60)
-        self.mqttc.subscribe("+/config")
+        self.mqttc.connect("192.168.0.33", 1883, 60)
+        self.mqttc.subscribe("+/mode")
         self.mqttc.subscribe("+/consumption")
         while not self.running:  # Mientras el evento de ejecución esté activo
             self.mqttc.loop(timeout=1.0)

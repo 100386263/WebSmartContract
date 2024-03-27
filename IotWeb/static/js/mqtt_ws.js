@@ -6,6 +6,7 @@ socket.onopen = function () {
     console.log('WebSocket mqtt connection established.');
 };
 
+var front_id = 0;
 var id_list = []
 socket.onmessage = function (event) {
     var message = JSON.parse(event.data);
@@ -57,10 +58,12 @@ function create_html(message) {
 
     });
     $('.send-config').on('click', function(){
+        console.log('llega aqui')
         let id = $(this).data('id')
+        console.log($('#dropdown-'+id))
         payload = {
             'device': id ,
-            'field':'config-petition',
+            'field':'mode-petition',
             'value':strategy_to_int[$('#dropdown-'+id).text()]
         }
         socket.send(JSON.stringify(payload))
@@ -69,7 +72,7 @@ function create_html(message) {
 
 function add_data(message) {
     switch (message.field) {
-        case 'config':
+        case 'mode':
             $('#dropdown-' + message.device).text(int_to_strategy[message.value])
             break;
         case 'consumption':
