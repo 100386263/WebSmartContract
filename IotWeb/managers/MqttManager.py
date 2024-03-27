@@ -1,3 +1,4 @@
+import json
 import threading
 import paho.mqtt.client as mqtt
 
@@ -12,7 +13,8 @@ class MQTTClient(threading.Thread):
 
     def run(self):
         self.mqttc.connect("localhost", 1883, 60)
-        self.mqttc.subscribe("prueba/iot")
+        self.mqttc.subscribe("+/config")
+        self.mqttc.subscribe("+/consumption")
         while not self.running:  # Mientras el evento de ejecución esté activo
             self.mqttc.loop(timeout=1.0)
 
@@ -23,7 +25,13 @@ class MQTTClient(threading.Thread):
     def on_message(self, client, userdata, msg):
         print(msg.topic + " " + str(msg.payload))
         # Envía el payload a través del websocket
-        self.websocket.send(msg.payload.decode('utf8'))
+        split_topic = msg.topic.split('/')
+        payload = {
+            'device': split_topic[0],
+            'field': split_topic[1],
+            'value': int(msg.payload.decode('utf-8'))
+        }
+        self.websocket.send(json.dumps(payload))
         
     def stop(self):
         self.running = True
