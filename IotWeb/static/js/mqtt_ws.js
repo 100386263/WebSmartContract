@@ -14,6 +14,7 @@ function find_key_value(objeto, valor) {
 }
 socket.onmessage = function (event) {
     var message = JSON.parse(event.data);
+    console.log(message)
     var find_id = find_key_value(id_list, message.device)
     if (find_id != undefined) {
 
@@ -64,11 +65,14 @@ function create_html(message, front_id) {
     });
     $('.send-config').on('click', function () {
         let id = $(this).data('id')
+        $('#dropdown-' + front_id).removeClass('btn-secondary').addClass('btn-warning')
         payload = {
             'device': id_list[id],
             'field': 'mode-petition',
             'value': strategy_to_int[$('#dropdown-' + id).text()]
         }
+        $('#dropdown-' + front_id).text('')
+        console.log(payload)
         socket.send(JSON.stringify(payload))
     })
 }
@@ -77,6 +81,7 @@ function add_data(message, front_id) {
     switch (message.field) {
         case 'mode':
             $('#dropdown-' + front_id).text(int_to_strategy[message.value])
+            $('#dropdown-' + front_id).removeClass('btn-warning').addClass('btn-secondary')
             break;
         case 'consumption':
             $('#consumption-' + front_id).text(message.value + ' w')
