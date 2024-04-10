@@ -26,7 +26,6 @@ services:
   mosquitto:
     image: eclipse-mosquitto
     container_name: mosquitto
-    network_mode: host
     ports:
       - "1883:1883"  # Puerto para MQTT (sin TLS)
       - "9001:9001"
