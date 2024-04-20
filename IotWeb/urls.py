@@ -20,4 +20,6 @@ from . import views
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', views.main, name='main'),
+    path('estimate/40.52037/-3.54458/35/0/6', views.solar_api, name='main'),
+
 ]
