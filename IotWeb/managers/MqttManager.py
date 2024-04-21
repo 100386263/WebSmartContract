@@ -16,6 +16,7 @@ class MQTTClient(threading.Thread):
         self.mqttc.connect("192.168.0.35", 1883, 60)
         self.mqttc.subscribe("+/mode")
         self.mqttc.subscribe("+/consumption")
+        self.mqttc.subscribe("+/production")
         while not self.running:  # Mientras el evento de ejecución esté activo
             self.mqttc.loop(timeout=1.0)
 

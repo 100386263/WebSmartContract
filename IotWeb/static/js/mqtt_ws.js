@@ -8,6 +8,8 @@ socket.onopen = function () {
 
 var front_id = 1;
 var id_list = {}
+var consumption = 0;
+var production = 0;
 
 function find_key_value(objeto, valor) {
     return Object.keys(objeto).find(key => objeto[key] === valor);
@@ -53,16 +55,47 @@ function create_html(message, front_id) {
         '</div >' +
         '<h6 class="card-title m-2">Consumo vivienda</h6>' +
         '<div class="row">' +
-        '<div class="col-4 p-3">' +
-        '<img src="/static/img/house.png" style="max-width: 100%;"></img>' +
+        '<div class="col-4">' +
+        '<div class="row">' +
+        '<p class="card-text text-center" id=solar-to-house-' + front_id + '></p>' +
+        '</div>' +
+        '<div class="row">' +
+        '<div id=flow-solar-to-house-' + front_id + '>' +
+        '</div>' +
+        '</div>' +
         '</div>' +
         '<div class="col-4">' +
         '<div class="row">' +
-        '<p class="card-text text-center" id=consumption-' + front_id + '></p>' +
+        '<p class="card-text text-center" id=production-' + front_id + '></p>' +
         '</div>' +
         '<div class="row">' +
-        '<div id=flow-' + front_id + '>' +
+        '<img src="/static/img/solar.png" style="max-width: 100%;"></img>' +
         '</div>' +
+        '</div>' +
+        '<div class="col-4">' +
+        '<div class="row">' +
+        '<p class="card-text text-center" id=solar-to-grid-' + front_id + '></p>' +
+        '</div>' +
+        '<div class="row">' +
+        '<div id=flow-solar-to-grid-' + front_id + '>' +
+        '</div>' +
+        '</div>' +
+        '</div>' +
+        '</div>' +
+        '<div class="row">' +
+        '<div class="col-4 p-3">' +
+        '<div class="row">' +
+        '<img src="/static/img/house.png" style="max-width: 100%;"></img>' +
+        '</div>' +
+        '<div class="row">' +
+        '<p class="card-text text-center" id=consumption-' + front_id + '></p>' +
+        '</div>' +
+        '</div>' +
+        '<div class="col-4">' +
+        '<div class="row pt-3">' +
+        '<div id=flow-grid-to-house-' + front_id + '>' +
+        '</div>' +
+        '<p class="card-text text-center" id=grid-to-house-' + front_id + '></p>' +
         '</div>' +
         '</div>' +
         '<div class="col-4 p-3">' +
@@ -101,20 +134,58 @@ function add_data(message, front_id) {
             $('#dropdown-' + front_id).removeClass('btn-warning').addClass('btn-secondary')
             break;
         case 'consumption':
-            $('#consumption-' + front_id).text(message.value + ' w')
-            const valorDiv = $('#flow-' + front_id);
+            consumption = message.value;
 
-            if (message.value > 0) {
-                valorDiv.removeClass().addClass('text-danger text-center').css({ 'display': 'block', 'width': '100%','font-size':'4em' }).html('&larr;');
-                $('#consumption-' + front_id).removeClass().addClass('text-danger text-center')
-            } else {
-                valorDiv.removeClass().addClass('text-success text-center').css({ 'display': 'block', 'width': '100%','font-size':'4em' }).html('&rarr;');
-                $('#consumption-' + front_id).removeClass().addClass('text-success text-center')
-            }
+
+            break;
+        case 'production':
+            production = message.value;
 
             break;
 
 
     }
+    drawEnergyFlow(front_id)
 }
 
+function drawEnergyFlow(front_id) {
+
+    var difference = production - consumption
+    console.log('Production: ', difference)
+    const flow_grid_to_house = $('#flow-grid-to-house-' + front_id);
+    const flow_solar_to_grid = $('#flow-solar-to-grid-' + front_id);
+    const flow_solar_to_house = $('#flow-solar-to-house-' + front_id);
+    flow_solar_to_house.removeClass().addClass('text-success text-center').css({ 'display': 'block', 'width': '100%', 'font-size': '4em' }).html('&larr;');
+    flow_solar_to_house.css({
+        "-webkit-transform": "rotate(-45deg)",
+
+    });
+    $('#consumption-' + front_id).text(consumption + ' w')
+    $('#production-' + front_id).text(production + ' w')
+
+    if (difference < 0) {
+        $('#grid-to-house-' + front_id).text(- difference + ' w')
+        $('#solar-to-house-' + front_id).text(production + ' w').addClass('text-success text-center')
+        $('#solar-to-grid-' + front_id).text('')
+        flow_solar_to_grid.removeClass().empty()
+        $('#grid-to-house-' + front_id).removeClass().addClass('text-danger text-center')
+        flow_grid_to_house.removeClass().addClass('text-danger text-center').css({ 'display': 'block', 'width': '100%', 'font-size': '4em' }).html('&larr;');
+    } else {
+        $('#grid-to-house-' + front_id).text('')
+        flow_grid_to_house.removeClass().empty()
+        $('#solar-to-house-' + front_id).text(consumption + ' w').addClass('text-success text-center')
+
+        $('#solar-to-grid-' + front_id).text(difference + ' w').addClass('text-success text-center')
+        flow_solar_to_grid.removeClass().addClass('text-success text-center').css({ 'display': 'block', 'width': '100%', 'font-size': '4em' }).html('&rarr;');
+        flow_solar_to_grid.css({
+            "-webkit-transform": "rotate(45deg)",
+
+        });
+
+
+    }
+    if (production == 0) {
+        flow_solar_to_house.removeClass().empty()
+        $('#solar-to-house-' + front_id).text('')
+    }
+}
