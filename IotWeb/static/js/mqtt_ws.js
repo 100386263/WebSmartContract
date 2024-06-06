@@ -52,6 +52,14 @@ function create_html(message, front_id) {
         '<a class="dropdown-item">Moderado</a>' +
         '<a class="dropdown-item">Arriesgado</a>' +
         '</div >' +
+        '<form>' +
+        '<label for=buy-price-' + front_id + '>Precio minimo de compra:</label>' +
+        '<input type="number" id=buy-price-' + front_id + ' name=buy-price-' + front_id + ' step="0.01" placeholder="0.00">' +
+        '</form>' +
+        '<form>' +
+        '<label for=sell-price-' + front_id + '>Precio minimo de compra:</label>' +
+        '<input type="number" id=sell-price-' + front_id + ' name=sell-price-' + front_id + ' step="0.01" placeholder="0.00">' +
+        '</form>' +
         '</div >' +
         '<h6 class="card-title m-2">Consumo vivienda</h6>' +
         '<div class="row">' +
@@ -115,15 +123,35 @@ function create_html(message, front_id) {
     });
     $('.send-config').on('click', function () {
         let id = $(this).data('id')
-        $('#dropdown-' + front_id).removeClass('btn-secondary').addClass('btn-warning')
-        payload = {
-            'device': id_list[id],
-            'field': 'mode-petition',
-            'value': strategy_to_int[$('#dropdown-' + id).text()]
+        if (strategy_to_int[$('#dropdown-' + id).text()] != undefined && $('#sell-price-' + id).val() != 0.00 && $('#buy-price-' + id).val() != 0.00) {
+            
+            $('#dropdown-' + front_id).removeClass('btn-secondary').addClass('btn-warning')
+            payload = {
+                'device': id_list[id],
+                'field': 'mode-petition',
+                'value': strategy_to_int[$('#dropdown-' + id).text()]
+            }
+            $('#dropdown-' + front_id).text('')
+            console.log(payload)
+            socket.send(JSON.stringify(payload))
+            payload = {
+                'device': id_list[id],
+                'field': 'buy-price',
+                'value': $('#buy-price-' + id).val(),
+            }
+            $('#dropdown-' + front_id).text('')
+            console.log(payload)
+            socket.send(JSON.stringify(payload))
+            payload = {
+                'device': id_list[id],
+                'field': 'sell-price',
+                'value': $('#sell-price-' + id).val(),
+            }
+            $('#dropdown-' + front_id).text('')
+            console.log(payload)
+            socket.send(JSON.stringify(payload))
         }
-        $('#dropdown-' + front_id).text('')
-        console.log(payload)
-        socket.send(JSON.stringify(payload))
+
     })
 }
 

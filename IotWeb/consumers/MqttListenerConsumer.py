@@ -27,4 +27,3 @@ class MQTTListenerConsumer(WebsocketConsumer):
         text_data = json.loads(text_data)
         topic = str(text_data['device'])+'/'+text_data['field']
         self.mqttClient.mqttc.publish(topic, text_data['value'])
-        pass
