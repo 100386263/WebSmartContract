@@ -53,11 +53,11 @@ function create_html(message, front_id) {
         '<a class="dropdown-item">Arriesgado</a>' +
         '</div >' +
         '<form>' +
-        '<label for=buy-price-' + front_id + '>Precio minimo de compra:</label>' +
+        '<label for=buy-price-' + front_id + '>Precio maximo de compra:</label>' +
         '<input type="number" id=buy-price-' + front_id + ' name=buy-price-' + front_id + ' step="0.01" placeholder="0.00">' +
         '</form>' +
         '<form>' +
-        '<label for=sell-price-' + front_id + '>Precio minimo de compra:</label>' +
+        '<label for=sell-price-' + front_id + '>Precio minimo     de    venta:&nbsp;&nbsp;&nbsp;</label>' +
         '<input type="number" id=sell-price-' + front_id + ' name=sell-price-' + front_id + ' step="0.01" placeholder="0.00">' +
         '</form>' +
         '</div >' +
